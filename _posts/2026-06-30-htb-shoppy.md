@@ -63,7 +63,6 @@ Then I added the new vhost to `/etc/hosts`.
 chickenprophecy@pwn$ echo "10.129.227.233 mattermost.shoppy.htb" | sudo tee -a /etc/hosts
 ```
 
-The key lesson here is that vhost fuzzing tests hidden hostnames like `mattermost.shoppy.htb`, while directory fuzzing tests hidden paths like `/admin`. Also, a bigger wordlist is not always better. The list that worked was smaller, but it had the service name `mattermost` in it.
 
 ### Directory brute on the main site
 
