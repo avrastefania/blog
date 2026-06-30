@@ -1,0 +1,33 @@
+---
+layout: default
+title: HTB Labs
+permalink: /htb/
+---
+<section class="intro">
+  <div class="wrap">
+    <h1><span class="prompt">&gt;</span> htb labs</h1>
+    <p>Every Hack The Box machine I've cracked, newest first.</p>
+  </div>
+</section>
+
+<section class="post-list">
+  <div class="wrap">
+    {% for post in site.posts %}
+    <article class="post-item">
+      <time class="post-date">{{ post.date | date: "%b %-d, %Y" }}</time>
+      <h2 class="post-title"><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h2>
+      {% if post.tags.size > 0 %}
+      <div class="tags">
+        {% for tag in post.tags limit:10 %}<span class="tag">{{ tag }}</span>{% endfor %}
+      </div>
+      {% endif %}
+    </article>
+    {% endfor %}
+
+    {% if site.posts.size == 0 %}
+    <article class="post-item">
+      <p class="post-excerpt">No labs posted yet.</p>
+    </article>
+    {% endif %}
+  </div>
+</section>

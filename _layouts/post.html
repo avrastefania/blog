@@ -1,0 +1,19 @@
+---
+layout: default
+---
+<article class="post-full">
+  <div class="wrap">
+    <time class="post-date">{{ page.date | date: "%b %-d, %Y" }}</time>
+    <h1 class="title">{{ page.title }}</h1>
+
+    {% if page.tags.size > 0 %}
+    <div class="post-meta-tags tags">
+      {% for tag in page.tags %}<span class="tag">{{ tag }}</span>{% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="content">
+      {{ content }}
+    </div>
+  </div>
+</article>

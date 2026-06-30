@@ -1,0 +1,33 @@
+---
+layout: default
+title: chickenprophecy
+---
+<section class="intro">
+  <div class="wrap">
+    <h1><span class="prompt">&gt;</span> chickenprophecy</h1>
+    <p>{{ site.tagline }} — Hack The Box machines, broken down step by step. Recon to root.</p>
+  </div>
+</section>
+
+<section class="post-list">
+  <div class="wrap">
+    {% for post in site.posts %}
+    <article class="post-item">
+      <time class="post-date">{{ post.date | date: "%b %-d, %Y" }}</time>
+      <h2 class="post-title"><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h2>
+      {% if post.tags.size > 0 %}
+      <div class="tags">
+        {% for tag in post.tags limit:8 %}<span class="tag">{{ tag }}</span>{% endfor %}
+      </div>
+      {% endif %}
+      <p class="post-excerpt">{{ post.excerpt | strip_html | truncatewords: 45 }}</p>
+    </article>
+    {% endfor %}
+
+    {% if site.posts.size == 0 %}
+    <article class="post-item">
+      <p class="post-excerpt">No walkthroughs yet. Drop a markdown file in <code>_posts/</code> and it shows up here.</p>
+    </article>
+    {% endif %}
+  </div>
+</section>
