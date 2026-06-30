@@ -3,7 +3,7 @@ title: "HTB: Delivery"
 date: 2026-06-23
 tags: [hackthebox, htb-delivery, osticket, tickettrick, mattermost, mysql, hashcat, password-cracking, easy, linux]
 ---
-![machine card](/assets/img/delivery/01-machine-card.png)
+![machine card](/blog/assets/img/delivery/01-machine-card.png)
 Delivery is an easy Linux box. The chain is mostly about chaining trust between
 services: a support desk hands out a company email, that email gets me into a
 Mattermost chat, the chat leaks SSH creds and a password hint, and that hint is
@@ -27,12 +27,12 @@ Three services: SSH on 22, nginx on 80, and something unidentified on 8065.
 
 
 ### The web app and the hostnames 
-![delivery landing](/assets/img/delivery/02-delivery-landing.png)
+![delivery landing](/blog/assets/img/delivery/02-delivery-landing.png)
 
-![helpdesk contact](/assets/img/delivery/03-helpdesk-contact.png)
-![osticket](/assets/img/delivery/04-osticket.png)
+![helpdesk contact](/blog/assets/img/delivery/03-helpdesk-contact.png)
+![osticket](/blog/assets/img/delivery/04-osticket.png)
 
-![mattermost login](/assets/img/delivery/05-mattermost-login.png)
+![mattermost login](/blog/assets/img/delivery/05-mattermost-login.png)
 
 
 
@@ -42,8 +42,8 @@ The site on port 80 is a "Delivery" landing page. The HELPDESK link points at `h
 So I add both names to hosts: ``` chickenprophecy@pwn$ echo "10.129.26.152 delivery.htb helpdesk.delivery.htb" | sudo tee -a /etc/hosts ``` `helpdesk.delivery.htb` is running osTicket (a support ticket system). Port 8065 turns out to be the Mattermost instance, and its registration is open, but it wants an `@delivery.htb` email I do not have yet.## Foothold: TicketTrick
 
 
-![open ticket](/assets/img/delivery/06-open-ticket.png)
-![ticket created](/assets/img/delivery/07-ticket-created.png)The trick here is that osTicket gives every new ticket its own email address on
+![open ticket](/blog/assets/img/delivery/06-open-ticket.png)
+![ticket created](/blog/assets/img/delivery/07-ticket-created.png)The trick here is that osTicket gives every new ticket its own email address on
 the company domain, so I can register a ticket, get a `@delivery.htb` address out
 of it, and use that address to sign up for Mattermost.
 
@@ -55,12 +55,12 @@ emailing a specific address:
 8086792@delivery.htb
 ```
 
-That is my company email. I register on Mattermost (port 8065) with it.![mattermost register](/assets/img/delivery/08-mattermost-register.png) ![ticket confirm link](/assets/img/delivery/09-ticket-confirm-link.png)
+That is my company email. I register on Mattermost (port 8065) with it.![mattermost register](/blog/assets/img/delivery/08-mattermost-register.png) ![ticket confirm link](/blog/assets/img/delivery/09-ticket-confirm-link.png)
 The confirmation step shows up inside the ticket thread back on osTicket (since the
 verification email "arrives" at the ticket address), so I read the confirmation link off the ticket and finish registration.
 
 Once in, I join the internal team channel. The conversation there hands me two things:
-![internal channel creds](/assets/img/delivery/10-internal-channel-creds.png)
+![internal channel creds](/blog/assets/img/delivery/10-internal-channel-creds.png)
 A set of SSH credentials posted in the chat:
 
 ```
