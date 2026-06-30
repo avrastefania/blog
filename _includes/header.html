@@ -1,6 +1,11 @@
 <header class="site-header">
   <div class="wrap">
-    <a class="brand" href="{{ '/' | relative_url }}"><span class="prompt">&gt;</span> chickenprophecy<span class="cursor">_</span></a>
+    <a class="brand" href="{{ '/' | relative_url }}">
+      <img class="site-avatar" src="{{ '/assets/img/avatar.png' | relative_url }}" alt="Profile picture">
+      <span class="prompt">&gt;</span>
+      chickenprophecy<span class="cursor">_</span>
+    </a>
+
     <nav class="nav">
       <a href="{{ '/' | relative_url }}" {% if page.url == '/' %}class="active"{% endif %}>home</a>
       <a href="{{ '/htb/' | relative_url }}" {% if page.url contains '/htb' %}class="active"{% endif %}>htb labs</a>
