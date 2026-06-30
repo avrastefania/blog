@@ -281,3 +281,18 @@ a:focus-visible {
   outline-offset: 2px;
   border-radius: 2px;
 }
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.site-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--green);
+  background: var(--bg-soft);
+  flex-shrink: 0;
+}
