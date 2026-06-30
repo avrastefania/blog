@@ -3,13 +3,12 @@ title: "HTB: Delivery"
 date: 2026-06-23
 tags: [hackthebox, htb-delivery, osticket, tickettrick, mattermost, mysql, hashcat, password-cracking, easy, linux]
 ---
-
-![Delivery machine card](/assets/img/delivery/01-machine-card.png)
-
+![machine card](/assets/img/delivery/01-machine-card.png)
 Delivery is an easy Linux box. The chain is mostly about chaining trust between
 services: a support desk hands out a company email, that email gets me into a
 Mattermost chat, the chat leaks SSH creds and a password hint, and that hint is
 what finally cracks the root hash I pull out of the Mattermost database.
+
 
 ## Recon
 
@@ -26,37 +25,25 @@ PORT     STATE SERVICE VERSION
 
 Three services: SSH on 22, nginx on 80, and something unidentified on 8065.
 
-### The web app and the hostnames
 
-![Delivery landing page](/assets/img/delivery/02-delivery-landing.png)
+### The web app and the hostnames 
+![delivery landing](/assets/img/delivery/02-delivery-landing.png)
 
-![Contact Us box pointing at the help desk](/assets/img/delivery/03-helpdesk-contact.png)
+![helpdesk contact](/assets/img/delivery/03-helpdesk-contact.png)
+![osticket](/assets/img/delivery/04-osticket.png)
 
-![osTicket support center](/assets/img/delivery/04-osticket.png)
+![mattermost login](/assets/img/delivery/05-mattermost-login.png)
 
-![Mattermost login on port 8065](/assets/img/delivery/05-mattermost-login.png)
 
-The site on port 80 is a "Delivery" landing page. The HELPDESK link points at
-`http://helpdesk.delivery.htb/`, and the Contact Us box says that once I have an
-`@delivery.htb` email address I can get into their Mattermost server.
 
-So I add both names to hosts:
+The site on port 80 is a "Delivery" landing page. The HELPDESK link points at `http://helpdesk.delivery.htb/`, and the Contact Us box says that once I have an `@delivery.htb` email address I can get into their Mattermost server. 
 
-```
-chickenprophecy@pwn$ echo "10.129.26.152 delivery.htb helpdesk.delivery.htb" | sudo tee -a /etc/hosts
-```
 
-`helpdesk.delivery.htb` is running osTicket (a support ticket system). Port 8065
-turns out to be the Mattermost instance, and its registration is open, but it
-wants an `@delivery.htb` email I do not have yet.
+So I add both names to hosts: ``` chickenprophecy@pwn$ echo "10.129.26.152 delivery.htb helpdesk.delivery.htb" | sudo tee -a /etc/hosts ``` `helpdesk.delivery.htb` is running osTicket (a support ticket system). Port 8065 turns out to be the Mattermost instance, and its registration is open, but it wants an `@delivery.htb` email I do not have yet.## Foothold: TicketTrick
 
-## Foothold: TicketTrick
 
-![Opening a new ticket](/assets/img/delivery/06-open-ticket.png)
-
-![Ticket created with its email address](/assets/img/delivery/07-ticket-created.png)
-
-The trick here is that osTicket gives every new ticket its own email address on
+![open ticket](/assets/img/delivery/06-open-ticket.png)
+![ticket created](/assets/img/delivery/07-ticket-created.png)The trick here is that osTicket gives every new ticket its own email address on
 the company domain, so I can register a ticket, get a `@delivery.htb` address out
 of it, and use that address to sign up for Mattermost.
 
@@ -68,21 +55,12 @@ emailing a specific address:
 8086792@delivery.htb
 ```
 
-That is my company email. I register on Mattermost (port 8065) with it.
+That is my company email. I register on Mattermost (port 8065) with it.![mattermost register](/assets/img/delivery/08-mattermost-register.png) ![ticket confirm link](/assets/img/delivery/09-ticket-confirm-link.png)
+The confirmation step shows up inside the ticket thread back on osTicket (since the
+verification email "arrives" at the ticket address), so I read the confirmation link off the ticket and finish registration.
 
-![Registering on Mattermost with the ticket email](/assets/img/delivery/08-mattermost-register.png)
-
-![Confirmation link arriving in the ticket thread](/assets/img/delivery/09-ticket-confirm-link.png)
-
-The confirmation step shows up inside the ticket thread back on osTicket (since
-the verification email "arrives" at the ticket address), so I read the
-confirmation link off the ticket and finish registration.
-
-Once in, I join the internal team channel. The conversation there hands me two
-things:
-
-![Internal channel leaking creds and the password hint](/assets/img/delivery/10-internal-channel-creds.png)
-
+Once in, I join the internal team channel. The conversation there hands me two things:
+![internal channel creds](/assets/img/delivery/10-internal-channel-creds.png)
 A set of SSH credentials posted in the chat:
 
 ```
@@ -90,18 +68,8 @@ maildeliverer:Youve_G0t_Mail!
 ```
 
 And a note from root that the team keeps reusing passwords that are variants of
-`PleaseSubscribe!`, with a specific warning: that word may not be in rockyou, but
-hashcat rules can crack variations of it. I noted that hard, it is the whole
-root step later.
+`PleaseSubscribe!`, with a specific warning.
 
-### Dead end I talked myself out of
-
-My first instinct was to take "they reuse passwords" plus "I have root's email"
-and try logging into Mattermost as root. That is wrong, and I caught it before
-wasting time. I do not have root's password or hash yet, only a hint that such
-hashes exist and are crackable. The move is not "log in as root somewhere," it
-is "find where root's hash is stored." That reframe is what pointed me at the
-database later.
 
 ## Shell as maildeliverer
 
@@ -116,14 +84,6 @@ maildeliverer
 maildeliverer@Delivery:~$ cat user.txt
 [user flag]
 ```
-
-User flag captured.
-
-Quick note on that flag: it is 32 hex characters, which looks like MD5, but it
-is not a crackable hash. It is just a random token proving access. A hash and a
-flag can share the same shape. What tells them apart is where you find them: a
-hash sits in a password field or a database, a flag sits in `user.txt` or
-`root.txt`. The actual crackable hash on this box shows up next.
 
 ## Privilege escalation
 
@@ -167,7 +127,7 @@ straight back to the chat hint.
 
 ### Cracking with the PleaseSubscribe! pattern
 
-This is the part that mattered. The password is a variant of `PleaseSubscribe!`,
+ The password is a variant of `PleaseSubscribe!`,
 so a normal wordlist like rockyou will not have it (root said as much in the
 chat). Instead of a giant wordlist, the move is to take that one base word and
 let hashcat rules mutate it into many realistic variations (append digits,
@@ -201,22 +161,3 @@ uid=0(root) gid=0(root) groups=0(root)
 root@Delivery:/opt/mattermost# cat /root/root.txt
 [root flag]
 ```
-
-Rooted.
-
-## Takeaways
-
-- TicketTrick: a help desk that issues company-domain ticket emails lets an
-  outsider get a "proof of employment" address, which other services then trust.
-  The lesson is that trust chains between services are an attack surface.
-- A hint is not a credential. "They reuse passwords" plus "I have root's email"
-  does not mean log in as root. It means go find where root's hash actually
-  lives. I caught myself trying the shortcut and pivoting was the right call.
-- A flag and a hash can look identical (both 32 hex here). Where you find it
-  tells you which it is.
-- When the password is a known base word that is not in standard wordlists,
-  do not brute force a huge list. Take the base word and mutate it with hashcat
-  rules (`best64.rule`). One word in, many realistic variations out. This is the
-  intermediate password-cracking idea the box is teaching.
-- bcrypt (`$2a$`) is slow on purpose, so a small targeted candidate list beats a
-  giant generic one.
