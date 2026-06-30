@@ -7,7 +7,7 @@ author: chickenprophecy
 # set baseurl to "/REPO" (e.g. "/chickenprophecy"). If you use a user
 # site at username.github.io with NO repo path, leave baseurl as "".
 baseurl: "/blog"
-url: "https://avrastef.github.io"
+url: "https://avrastefania.github.io"
 
 markdown: kramdown
 highlighter: rouge
