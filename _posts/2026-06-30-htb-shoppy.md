@@ -46,14 +46,7 @@ chickenprophecy@pwn$ gobuster vhost -u http://shoppy.htb \
 (no results)
 ```
 
-That does not mean there are no vhosts. It can also mean the wordlist did not contain the right name. I searched the SecLists DNS lists for `mattermost` and found that some smaller service-name style lists included it.
-
-```bash
-chickenprophecy@pwn$ grep -rl mattermost /usr/share/seclists/Discovery/DNS/ | head
-/usr/share/seclists/Discovery/DNS/namelist.txt
-/usr/share/seclists/Discovery/DNS/bitquark-subdomains-top100000.txt
-...
-```
+That does not mean there are no vhosts. It can also mean the wordlist did not contain the right name.
 
 Re-running with `namelist.txt` found a valid vhost.
 
