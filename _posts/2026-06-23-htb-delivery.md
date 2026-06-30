@@ -4,6 +4,7 @@ date: 2026-06-23
 tags: [hackthebox, htb-delivery, osticket, tickettrick, mattermost, mysql, hashcat, password-cracking, easy, linux]
 ---
 ![machine card](/blog/assets/img/delivery/01-machine-card.png)
+
 Delivery is an easy Linux box. The chain is mostly about chaining trust between
 services: a support desk hands out a company email, that email gets me into a
 Mattermost chat, the chat leaks SSH creds and a password hint, and that hint is
