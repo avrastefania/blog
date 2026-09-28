@@ -1,5 +1,5 @@
 ---
-title: "HTB: Delivery"
+title: "Delivery (HackTheBox, Linux)"
 date: 2026-06-23
 tags: [hackthebox, htb-delivery, osticket, tickettrick, mattermost, mysql, hashcat, password-cracking, easy, linux]
 ---

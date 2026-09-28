@@ -1,5 +1,5 @@
 ---
-title: "HTB: Shoppy"
+title: "Shoppy (HackTheBox, Linux)"
 date: 2026-06-30
 tags: [hackthebox, htb-shoppy, nosql-injection, mattermost, hashcat, ghidra, reverse-engineering, docker, easy, linux]
 ---

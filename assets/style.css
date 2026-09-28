@@ -179,14 +179,14 @@ body {
   margin: 2.2em 0 0.6em;
   padding-bottom: 6px;
   border-bottom: 1px solid var(--border);
-  color: var(--fg);
+  color: var(--green);
 }
 .content h2::before { content: "## "; color: var(--green); }
 .content h3 {
   font-family: var(--mono);
   font-size: 1.15rem;
   margin: 1.8em 0 0.5em;
-  color: var(--fg);
+  color: var(--amber);
 }
 .content h3::before { content: "### "; color: var(--amber); }
 .content p { margin: 1em 0; }
